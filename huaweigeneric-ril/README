@@ -1,0 +1,28 @@
+The modules has still a few problems:
+
+* required modify init.rc add: 
+
+	on device-added-/dev/block/sr0
+		start usb_modeswitch
+
+	service pppd_gprs /system/bin/ppd /dev/ttyUSB0 115200 nocrtscts usepeerdns debug nodetach ipcp-accept-local ipcp-accept-remote defaultroute
+		user root
+		group radio cache inet misc
+		disabled
+		oneshot
+	
+	service usb_modeswitch /system/bin/usbs
+		user root
+		disabled
+		oneshot
+
+* Edit your ueventd.<yourboard>.rc and add:
+
+        /dev/ttyUSB*       0666   system     system
+
+* Edit system/build.prop, add:
+
+	# for 3g
+	rild.libpath=/system/lib/libhuaweigeneric-ril.so
+	rild.libargs=-d /dev/ttyUSB2
+	keyguard.no_require_sim=1
